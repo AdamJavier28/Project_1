@@ -17,6 +17,7 @@ def create_hourly_rentals_df(df):
     return hourly_rentals_df
 
 def create_monthly_trend_df(df):
+    df["dteday"] = pd.to_datetime(df["dteday"])
     monthly_trend_df = all_df.resample(rule='M', on='dteday').agg({
         "cnt_y": "sum"
     })
