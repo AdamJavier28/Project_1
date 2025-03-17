@@ -5,7 +5,7 @@ import streamlit as st
 from babel.numbers import format_currency
 sns.set(style='dark')
 
-def create_hourly_rentals_df(df):
+def create_hourly_rentals_df():
     hourly_rentals_df = hour_df.groupby("hr").agg({
         "cnt": "sum"
     }).reset_index()
@@ -16,7 +16,7 @@ def create_hourly_rentals_df(df):
 
     return hourly_rentals_df
 
-def create_monthly_trend_df(df):
+def create_monthly_trend_df():
     monthly_trend_df = day_df.resample(rule='M', on='dteday').agg({
         "cnt": "sum"
     })
@@ -32,8 +32,8 @@ day_df = pd.read_csv("day_df.csv")
 hour_df = pd.read_csv("hour_df.csv")
 
 
-monthly_trend_df = create_monthly_trend_df(df)
-hourly_trend_df = create_hourly_rentals_df(df)
+monthly_trend_df = create_monthly_trend_df()
+hourly_trend_df = create_hourly_rentals_df()
 
 st.subheader('Tren Penyewaan Sepeda per Bulan')
 
