@@ -5,7 +5,7 @@ import streamlit as st
 from babel.numbers import format_currency
 sns.set(style='dark')
 
-def create_hourly_rentals_df():
+def create_hourly_rentals_df(df):
     hourly_rentals_df = hour_df.groupby("hr").agg({
         "cnt": "sum"
     }).reset_index()
@@ -16,7 +16,7 @@ def create_hourly_rentals_df():
 
     return hourly_rentals_df
 
-def create_monthly_trend_df():
+def create_monthly_trend_df(df):
     monthly_trend_df = day_df.resample(rule='M', on='dteday').agg({
         "cnt": "sum"
     })
@@ -31,9 +31,28 @@ def create_monthly_trend_df():
 day_df = pd.read_csv("day_df.csv")
 hour_df = pd.read_csv("hour_df.csv")
 
+datetime_columns = ["dteday"]
+day_df.sort_values(by="dteday", inplace=True)
+day_df.reset_index(inplace=True)
+for column in datetime_columns:
+    day_df[column] = pd.to_datetime(day_df[column])
 
-monthly_trend_df = create_monthly_trend_df()
-hourly_trend_df = create_hourly_rentals_df()
+min_date = day_df["dteday"].min()
+max_date = day_df["dteday"].max()
+with st.sidebar:
+    start_date, end_date = st.date_input(
+        label='Rentang Waktu',min_value=min_date,
+        max_value=max_date,
+        value=[min_date, max_date]
+    )
+
+main_df = [(day_df["dteday"] >= str(start_date)) &
+           (day_df["dteday"] <= str(end_date))]
+
+
+
+monthly_trend_df = create_monthly_trend_df(main_df)
+hourly_trend_df = create_hourly_rentals_df(main_df)
 
 st.subheader('Tren Penyewaan Sepeda per Bulan')
 
@@ -57,3 +76,4 @@ ax.plot(hourly_trend_df["hour"], hourly_trend_df["total_rentals"],
 ax.set_xticks(range(0, 24)) 
 
 st.pyplot(fig)
+
