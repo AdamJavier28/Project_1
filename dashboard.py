@@ -7,11 +7,11 @@ sns.set(style='dark')
 
 def create_hourly_rentals_df(df):
     hourly_rentals_df = all_df.groupby("hr").agg({
-        "cnt_x": "sum"
+        "cnt_y": "sum"
     }).reset_index()
     hourly_rentals_df.rename(columns={
         "hr": "hour",
-        "cnt_x": "total_rentals"
+        "cnt_y": "total_rentals"
     }, inplace=True)
 
     return hourly_rentals_df
@@ -19,14 +19,14 @@ def create_hourly_rentals_df(df):
 def create_monthly_trend_df(df):
     df["dteday"] = pd.to_datetime(df["dteday"])
     monthly_trend_df = all_df.resample(rule='M', on='dteday').agg({
-        "cnt_y": "sum"
+        "cnt_x": "sum"
     })
     df["dteday"] = pd.to_datetime(df["dteday"])
     monthly_trend_df.index = monthly_trend_df.index.strftime('%Y-%m')
     monthly_trend_df = monthly_trend_df.reset_index()
     monthly_trend_df.rename(columns={
         "dteday": "year_month",
-        "cnt_y": "total_rentals"
+        "cnt_x": "total_rentals"
     }, inplace=True)
     return monthly_trend_df
 
