@@ -65,4 +65,4 @@ if selected_option == "Tren Penyewaan Jam":
 
     st.pyplot(fig)
 
-print(day_df.dtypes) 
+
