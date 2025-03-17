@@ -29,8 +29,8 @@ def create_monthly_trend_df(df):
     }, inplace=True)
     return monthly_trend_df
 
-day_df = pd.read_csv("day_df")
-hour_df = pd.read_csv("hour_df")
+day_df = pd.read_csv("day_df.csv")
+hour_df = pd.read_csv("hour_df.csv")
 
 selected_option = st.sidebar.radio(
     "Pilih Tren yang Ingin Ditampilkan:",
