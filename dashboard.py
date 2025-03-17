@@ -32,8 +32,8 @@ day_df = pd.read_csv("day_df.csv")
 hour_df = pd.read_csv("hour_df.csv")
 
 
-monthly_trend_df = create_monthly_trend_df()
-hourly_trend_df = create_hourly_rentals_df()
+monthly_trend_df = create_monthly_trend_df(df)
+hourly_trend_df = create_hourly_rentals_df(df)
 
 st.subheader('Tren Penyewaan Sepeda per Bulan')
 
