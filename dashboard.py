@@ -57,7 +57,7 @@ hourly_trend_df = create_hourly_rentals_df(main_df)
 st.subheader('Tren Penyewaan Sepeda per Bulan')
 
 max_month = monthly_trend_df.loc[monthly_trend_df["total_rentals"].idxmax()]
-st.metric("Tren teritinggi pada Bulan", value=max_month)
+st.metric("Tren teritinggi pada Bulan", value=str(max_month["year_month"]))
 
 fig, ax = plt.subplots(figsize=(10, 5))
 ax.plot(monthly_trend_df["year_month"], monthly_trend_df["total_rentals"], marker="o", linestyle="-", color="#72BCD4")
