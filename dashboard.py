@@ -39,7 +39,7 @@ selected_option = st.sidebar.radio(
 
 if selected_option == "Tren Penyewaan per Bulan":
 
-    monthly_trend_df = create_monthly_trend_df(hour_df)
+    monthly_trend_df = create_monthly_trend_df(day_df)
     st.subheader('Tren Penyewaan Sepeda per Bulan')
 
     max_month = monthly_trend_df.loc[monthly_trend_df["total_rentals"].idxmax()]
