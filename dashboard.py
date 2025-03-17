@@ -20,6 +20,7 @@ def create_monthly_trend_df(df):
     monthly_trend_df = day_df.resample(rule='M', on='dteday').agg({
         "cnt": "sum"
     })
+    df["dteday"] = pd.to_datetime(df["dteday"])
     monthly_trend_df.index = monthly_trend_df.index.strftime('%Y-%m')
     monthly_trend_df = monthly_trend_df.reset_index()
     monthly_trend_df.rename(columns={
