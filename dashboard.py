@@ -68,7 +68,7 @@ st.pyplot(fig)
 
 st.subheader("Tren Penyewaan Sepeda Berdasarkan Jam")
 max_hour = hourly_trend_df.loc[hourly_trend_df["total_rentals"].idxmax()]
-st.metric("Waktu dengan Penyewaan Tertinggi", value=max_hour)
+st.metric("Waktu dengan Penyewaan Tertinggi", value=str(max_month["hour"]))
 
 fig, ax = plt.subplots(figsize=(10, 5))
 ax.plot(hourly_trend_df["hour"], hourly_trend_df["total_rentals"], 
