@@ -17,7 +17,7 @@ def create_hourly_rentals_df(df):
     return hourly_rentals_df
 
 def create_monthly_trend_df(df):
-    df["dteday"] = pd.to_datetime(df["dteday"])
+
     monthly_trend_df = day_df.resample(rule='ME', on='dteday').agg({
         "cnt": "sum"
     })
@@ -30,12 +30,18 @@ def create_monthly_trend_df(df):
     }, inplace=True)
     return monthly_trend_df
 
+def create_bins_df(df):
+    bins = [0, 2500, 5000, day_df["cnt"].max()]
+    labels = ["Rendah", "Sedang", "Tinggi"]
+    day_df["rental_category"] = pd.cut(day_df["cnt"], bins=bins, labels=labels, include_lowest=True)
+    rental_counts = day_df["rental_category"].value_counts()
+
 day_df = pd.read_csv("day_df.csv")
 hour_df = pd.read_csv("hour_df.csv")
 
 selected_option = st.sidebar.radio(
     "Pilih Tren yang Ingin Ditampilkan:",
-    ("Tren Penyewaan per Bulan", "Tren Penyewaan Jam")
+    ("Tren Penyewaan per Bulan", "Tren Penyewaan Jam", "Distribusi Penyewaan Sepeda Berdasarkan Jumlah Per Hari")
 )
 
 
@@ -66,4 +72,12 @@ if selected_option == "Tren Penyewaan Jam":
     ax.set_xticks(range(0, 24)) 
 
     st.pyplot(fig)
+
+if selected_option == "Distribusi Penyewaan Sepeda Berdasarkan Jumlah Per Hari":
+    rental_counts = create_bins_df(hour_df)
+    st.subheader("Distribusi Penyewaan Sepeda Berdasarkan Kuantitas")
+    plt.figure(figsize=(8, 8))
+    plt.pie(rental_counts, labels=rental_counts.index, autopct="%1.1f%%", colors=["#ff9999", "#66b3ff", "#99ff99", "#ffcc99", "#c2c2f0"])
+    plt.title("Distribusi Penyewaan Sepeda Berdasarkan Kuantitas")
+    plt.show()
 
