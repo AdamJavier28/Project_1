@@ -31,11 +31,13 @@ def create_monthly_trend_df(df):
 day_df = pd.read_csv("day_df.csv")
 hour_df = pd.read_csv("hour_df.csv")
 
-show_monthly_trend = st.sidebar.checkbox("Tampilkan Tren Penyewaan per Bulan", value=True)
-show_hourly_trend = st.sidebar.checkbox("Tampilkan Tren Penyewaan per Jam", value=False)
+selected_option = st.sidebar.radio(
+    "Pilih Tren yang Ingin Ditampilkan:",
+    ("Tren Penyewaan per Bulan", "Tren Penyewaan Jam")
+)
 
 
-if show_monthly_trend:
+if selected_option == "Tren Penyewaan per Bulan":
 
     monthly_trend_df = create_monthly_trend_df(hour_df)
     st.subheader('Tren Penyewaan Sepeda per Bulan')
@@ -50,7 +52,7 @@ if show_monthly_trend:
     ax.tick_params(axis='x', rotation=45) 
     st.pyplot(fig)
 
-if show_hourly_trend:
+if selected_option == "Tren Penyewaan Jam":
     hourly_trend_df = create_hourly_rentals_df(hour_df)
     st.subheader("Tren Penyewaan Sepeda Berdasarkan Jam")
     max_hour = hourly_trend_df.loc[hourly_trend_df["total_rentals"].idxmax()]
