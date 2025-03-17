@@ -31,49 +31,35 @@ def create_monthly_trend_df(df):
 day_df = pd.read_csv("day_df.csv")
 hour_df = pd.read_csv("hour_df.csv")
 
-datetime_columns = ["dteday"]
-day_df.sort_values(by="dteday", inplace=True)
-day_df.reset_index(inplace=True)
-for column in datetime_columns:
-    day_df[column] = pd.to_datetime(day_df[column])
-
-min_date = day_df["dteday"].min()
-max_date = day_df["dteday"].max()
-with st.sidebar:
-    start_date, end_date = st.date_input(
-        label='Rentang Waktu',min_value=min_date,
-        max_value=max_date,
-        value=[min_date, max_date]
-    )
-
-main_df = [(day_df["dteday"] >= str(start_date)) &
-           (day_df["dteday"] <= str(end_date))]
+show_monthly_trend = st.sidebar.checkbox("Tampilkan Tren Penyewaan per Bulan", value=True)
+show_hourly_trend = st.sidebar.checkbox("Tampilkan Tren Penyewaan per Jam", value=False)
 
 
+if show_monthly_trend:
 
-monthly_trend_df = create_monthly_trend_df(main_df)
-hourly_trend_df = create_hourly_rentals_df(main_df)
+    monthly_trend_df = create_monthly_trend_df(hour_df)
+    st.subheader('Tren Penyewaan Sepeda per Bulan')
 
-st.subheader('Tren Penyewaan Sepeda per Bulan')
+    max_month = monthly_trend_df.loc[monthly_trend_df["total_rentals"].idxmax()]
+    st.metric("Tren teritinggi pada Bulan", value=str(max_month["year_month"]))
 
-max_month = monthly_trend_df.loc[monthly_trend_df["total_rentals"].idxmax()]
-st.metric("Tren teritinggi pada Bulan", value=str(max_month["year_month"]))
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(monthly_trend_df["year_month"], monthly_trend_df["total_rentals"], marker="o", linestyle="-", color="#72BCD4")
+    ax.set_xlabel("Bulan", fontsize=12)
+    ax.set_ylabel("Jumlah Penyewaan Sepeda", fontsize=12)
+    ax.tick_params(axis='x', rotation=45) 
+    st.pyplot(fig)
 
-fig, ax = plt.subplots(figsize=(10, 5))
-ax.plot(monthly_trend_df["year_month"], monthly_trend_df["total_rentals"], marker="o", linestyle="-", color="#72BCD4")
-ax.set_xlabel("Bulan", fontsize=12)
-ax.set_ylabel("Jumlah Penyewaan Sepeda", fontsize=12)
-ax.tick_params(axis='x', rotation=45) 
-st.pyplot(fig)
+if show_hourly_trend:
+    hourly_trend_df = create_hourly_rentals_df(hour_df)
+    st.subheader("Tren Penyewaan Sepeda Berdasarkan Jam")
+    max_hour = hourly_trend_df.loc[hourly_trend_df["total_rentals"].idxmax()]
+    st.metric("Waktu dengan Penyewaan Tertinggi", value=str(max_hour["hour"]))
 
-st.subheader("Tren Penyewaan Sepeda Berdasarkan Jam")
-max_hour = hourly_trend_df.loc[hourly_trend_df["total_rentals"].idxmax()]
-st.metric("Waktu dengan Penyewaan Tertinggi", value=str(max_hour["hour"]))
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(hourly_trend_df["hour"], hourly_trend_df["total_rentals"], 
+            marker="o", linestyle="-", color="#72BCD4")
+    ax.set_xticks(range(0, 24)) 
 
-fig, ax = plt.subplots(figsize=(10, 5))
-ax.plot(hourly_trend_df["hour"], hourly_trend_df["total_rentals"], 
-        marker="o", linestyle="-", color="#72BCD4")
-ax.set_xticks(range(0, 24)) 
-
-st.pyplot(fig)
+    st.pyplot(fig)
 
