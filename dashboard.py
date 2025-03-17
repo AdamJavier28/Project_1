@@ -17,8 +17,6 @@ def create_hourly_rentals_df(df):
     return hourly_rentals_df
 
 def create_monthly_trend_df(df):
-    df["dteday"] = pd.to_datetime(df["dteday"])
-    df.set_index("dteday", inplace=True) 
     monthly_trend_df = day_df.resample(rule='M', on='dteday').agg({
         "cnt": "sum"
     })
@@ -31,8 +29,7 @@ def create_monthly_trend_df(df):
     }, inplace=True)
     return monthly_trend_df
 
-day_df = pd.read_csv("day_df.csv")
-hour_df = pd.read_csv("hour_df.csv")
+all_df = pd.read_csv("all_df.csv")
 
 selected_option = st.sidebar.radio(
     "Pilih Tren yang Ingin Ditampilkan:",
@@ -42,7 +39,7 @@ selected_option = st.sidebar.radio(
 
 if selected_option == "Tren Penyewaan per Bulan":
 
-    monthly_trend_df = create_monthly_trend_df(day_df)
+    monthly_trend_df = create_monthly_trend_df(all_df)
     st.subheader('Tren Penyewaan Sepeda per Bulan')
 
     max_month = monthly_trend_df.loc[monthly_trend_df["total_rentals"].idxmax()]
@@ -56,7 +53,7 @@ if selected_option == "Tren Penyewaan per Bulan":
     st.pyplot(fig)
 
 if selected_option == "Tren Penyewaan Jam":
-    hourly_trend_df = create_hourly_rentals_df(hour_df)
+    hourly_trend_df = create_hourly_rentals_df(all_df)
     st.subheader("Tren Penyewaan Sepeda Berdasarkan Jam")
     max_hour = hourly_trend_df.loc[hourly_trend_df["total_rentals"].idxmax()]
     st.metric("Waktu dengan Penyewaan Tertinggi", value=str(max_hour["hour"]))
@@ -68,3 +65,4 @@ if selected_option == "Tren Penyewaan Jam":
 
     st.pyplot(fig)
 
+print(day_df.dtypes) 
