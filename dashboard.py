@@ -6,31 +6,31 @@ from babel.numbers import format_currency
 sns.set(style='dark')
 
 def create_hourly_rentals_df(df):
-    hourly_rentals_df = all_df.groupby("hr").agg({
-        "cnt_y": "sum"
+    hourly_rentals_df = hour_df.groupby("hr").agg({
+        "cnt": "sum"
     }).reset_index()
     hourly_rentals_df.rename(columns={
         "hr": "hour",
-        "cnt_y": "total_rentals"
+        "cnt": "total_rentals"
     }, inplace=True)
 
     return hourly_rentals_df
 
 def create_monthly_trend_df(df):
-    df["dteday"] = pd.to_datetime(df["dteday"])
-    monthly_trend_df = all_df.resample(rule='M', on='dteday').agg({
-        "cnt_x": "sum"
+    monthly_trend_df = day_df.resample(rule='ME', on='dteday').agg({
+        "cnt": "sum"
     })
     df["dteday"] = pd.to_datetime(df["dteday"])
     monthly_trend_df.index = monthly_trend_df.index.strftime('%Y-%m')
     monthly_trend_df = monthly_trend_df.reset_index()
     monthly_trend_df.rename(columns={
         "dteday": "year_month",
-        "cnt_x": "total_rentals"
+        "cnt": "total_rentals"
     }, inplace=True)
     return monthly_trend_df
 
-all_df = pd.read_csv("all_df.csv")
+day_df = pd.read_csv("day_df")
+hour_df = pd.read_csv("hour_df")
 
 selected_option = st.sidebar.radio(
     "Pilih Tren yang Ingin Ditampilkan:",
@@ -40,7 +40,7 @@ selected_option = st.sidebar.radio(
 
 if selected_option == "Tren Penyewaan per Bulan":
 
-    monthly_trend_df = create_monthly_trend_df(all_df)
+    monthly_trend_df = create_monthly_trend_df(day_df)
     st.subheader('Tren Penyewaan Sepeda per Bulan')
 
     max_month = monthly_trend_df.loc[monthly_trend_df["total_rentals"].idxmax()]
@@ -54,7 +54,7 @@ if selected_option == "Tren Penyewaan per Bulan":
     st.pyplot(fig)
 
 if selected_option == "Tren Penyewaan Jam":
-    hourly_trend_df = create_hourly_rentals_df(all_df)
+    hourly_trend_df = create_hourly_rentals_df(hour_df)
     st.subheader("Tren Penyewaan Sepeda Berdasarkan Jam")
     max_hour = hourly_trend_df.loc[hourly_trend_df["total_rentals"].idxmax()]
     st.metric("Waktu dengan Penyewaan Tertinggi", value=str(max_hour["hour"]))
@@ -65,5 +65,4 @@ if selected_option == "Tren Penyewaan Jam":
     ax.set_xticks(range(0, 24)) 
 
     st.pyplot(fig)
-
 
