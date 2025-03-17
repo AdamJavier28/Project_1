@@ -35,6 +35,7 @@ def create_bins_df(df):
     labels = ["Rendah", "Sedang", "Tinggi"]
     day_df["rental_category"] = pd.cut(day_df["cnt"], bins=bins, labels=labels, include_lowest=True)
     rental_counts = day_df["rental_category"].value_counts()
+    return rental_counts
 
 day_df = pd.read_csv("day_df.csv")
 hour_df = pd.read_csv("hour_df.csv")
