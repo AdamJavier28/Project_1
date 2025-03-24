@@ -79,9 +79,9 @@ if selected_option == "Distribusi Penyewaan Sepeda Berdasarkan Jumlah Per Hari":
     st.subheader("Distribusi Penyewaan Sepeda Berdasarkan Kuantitas")
     st.markdown("""
      
-    🟥 **Rendah**: < 2500 penyewaan  
-    🟦 **Sedang**: 2500 - 5000 penyewaan  
-    🟩 **Tinggi**: > 5000 penyewaan  
+    🟩 **Rendah**    : < 2500 penyewaan  
+    🟥 **Sedang**    : 2500 - 5000 penyewaan  
+    🟦 **Tinggi**    : > 5000 penyewaan  
     """)
     fig, ax = plt.subplots(figsize=(8, 8))
     ax.pie(rental_counts, labels=rental_counts.index, autopct="%1.1f%%", 
